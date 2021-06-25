@@ -16,13 +16,14 @@
 #include "A2DetMWPC.hh"
 #include "A2DetCherenkov.hh"
 #include "A2DetPizza.hh"
+#include "A2DetCATS.hh" //edit
 
 class G4Box;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 class G4Material;
 class A2DetectorMessenger;
-
+class G4Tubs;
 
 class A2DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -46,6 +47,8 @@ class A2DetectorConstruction : public G4VUserDetectorConstruction
   void SetUseMWPC(G4int use){fUseMWPC=use;}
   void SetUseCherenkov(G4int use){fUseCherenkov=use;}
   void SetUsePizza(G4int use){fUsePizza=use;}
+  void SetUseCATS(G4int use){fUseCATS=use;}  //edit
+
 
   G4int GetUseMWPC() const { return fUseMWPC; }
 
@@ -99,6 +102,7 @@ public:
   A2DetTOF* fTOF;   //MWPC detector
   A2DetCherenkov* fCherenkov; //Cherenkov detector
   A2DetPizza* fPizza; // Pizza detector
+  A2DetCATS* fCATS; //CATS detector , edit
 
   G4ThreeVector fHemiGap;
   G4String fCBCrystGeometry;
@@ -122,6 +126,7 @@ public:
   G4int fUseTOF;  //Build the TOF wall
   G4int fUseCherenkov; //Build the Cherenkov
   G4int fUsePizza; //Build the Pizza detector
+  G4int fUseCATS; //Build the CATS detector, edit
 
   G4String fTOFparFile; //TOF setup configuration
   
@@ -140,6 +145,8 @@ public:
   // Pizza setup
   G4double fPizzaZ;
 
+  //CATS setup
+ // G4double fCATS; // I dont think this part is necessary
 private:
     
    

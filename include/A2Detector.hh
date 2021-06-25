@@ -18,7 +18,7 @@ public:
   A2Detector();
   ~A2Detector();
   
-  virtual G4VPhysicalVolume* Construct(G4LogicalVolume *MotherLogic)=0; //Build the detector
+ virtual G4VPhysicalVolume* Construct(G4LogicalVolume *MotherLogic)=0; //Build the detector 
 
   G4VPhysicalVolume* GetPhysi(){return fMyPhysi;};
   G4LogicalVolume* GetLogic(){return fMyLogic;}
