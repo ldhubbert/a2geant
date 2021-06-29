@@ -12,27 +12,6 @@
 #include "G4Box.hh"
 #include "G4Material.hh"
 
-//A2DetectorConstruction.hh
-//A2DetectorMessenger.hh
-/*As of right now, A2DetectorConstruction.hh and A2DetectorMessenger.hh keep the code from compiling. I'm not sure, but I believe that by not including these headers the vessel geometry cannot be contructed
- *
- * . They give the following error:
- 
-
-*                  from /home/vincent/opt/A2Geant4/src/A2DetCATS.cc:5:
-/home/vincent/opt/A2Geant4/include/A2DetectorConstruction.hh:105:3: error: ‘A2DetCATS’ does not name a type; did you mean ‘A2DetTAPS’?
-  105 |   A2DetCATS* fCATS; //CATS detector
-      |   ^~~~~~~~~
-      |   A2DetTAPS
-make[2]: *** [CMakeFiles/A2Geant4.dir/build.make:121: CMakeFiles/A2Geant4.dir/src/A2DetCATS.cc.o] Error 1
-make[1]: *** [CMakeFiles/Makefile2:95: CMakeFiles/A2Geant4.dir/all] Error 2
-make: *** [Makefile:103: all] Error 2
-
- *
- *
- */
-
-
 /* These may be added later. Sensitive detector stuff definitly will be.
 #include "G4Region.hh"
 #include "G4OpticalSurface.hh"
@@ -54,9 +33,10 @@ public:
 	~A2DetCATS();
 
 	virtual  G4VPhysicalVolume* Construct(G4LogicalVolume *MotherLogic); 
-	void MakeVessel();
+	void MakeCore();
 	void DefineMaterials();
-
+	void MakeAnnulus();
+	void MakeRing();
 private:
 	//nist manager
 	G4NistManager* fNistManager;
@@ -69,10 +49,25 @@ private:
 	G4LogicalVolume* fMyLogic; //logical volume for CATS
 	G4VPhysicalVolume* fMyPhysi; //physical volume for this detector
 
-	//volumes specifically for this detector 
-	//G4Tubs* fVessel; //The inclusion of this line cause a "shadow" warning, but it still compiles
-	G4LogicalVolume* fVesselLogic;
-	G4VPhysicalVolume *fVesselPhysi;
+	//volumes specifically for this detector
+	G4LogicalVolume* fCoreLogic;
+	G4VPhysicalVolume *fCorePhysi;
+
+	G4LogicalVolume* fAnnulusPiece1Logic;
+	G4VPhysicalVolume *fAnnulusPiece1Physi;
+	G4LogicalVolume* fAnnulusPiece2Logic;
+	G4VPhysicalVolume *fAnnulusPiece2Physi;
+	G4LogicalVolume* fAnnulusPiece3Logic;
+	G4VPhysicalVolume *fAnnulusPiece3Physi;
+	G4LogicalVolume* fAnnulusPiece4Logic;
+	G4VPhysicalVolume *fAnnulusPiece4Physi;
+	G4LogicalVolume* fAnnulusPiece5Logic;
+	G4VPhysicalVolume *fAnnulusPiece5Physi;
+	G4LogicalVolume* fAnnulusPiece6Logic;
+	G4VPhysicalVolume *fAnnulusPiece6Physi;
+
+	G4LogicalVolume* fRingLogic;
+	G4VPhysicalVolume *fRingPhysi;
 } ;
 
 #endif

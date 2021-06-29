@@ -19,7 +19,7 @@
 #/A2/det/setTAPSZ 175 cm
 #/A2/det/setTAPSN 510
 
-##Use CATS. This is certainly going to need more -V
+##Use CATS.
 /A2/det/useCATS 1
 
 ##Use the PID
