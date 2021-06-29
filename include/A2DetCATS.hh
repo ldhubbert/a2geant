@@ -38,16 +38,15 @@ public:
 	void MakeAnnulus();
 	void MakeRing();
 private:
-	//nist manager
 	G4NistManager* fNistManager;
 	//A2SD* fCATSSD; //Will be included later when detector is made sensitive
 	//A2VisSD* fCATSVisSD; //
 
 
 	//logical and physical volumes that are part of every detector class
-	G4LogicalVolume* fMotherLogic; //logical volume of the mother
-	G4LogicalVolume* fMyLogic; //logical volume for CATS
-	G4VPhysicalVolume* fMyPhysi; //physical volume for this detector
+	G4LogicalVolume* fMotherLogic; 
+	G4LogicalVolume* fMyLogic; 
+	G4VPhysicalVolume* fMyPhysi; 
 
 	//volumes specifically for this detector
 	G4LogicalVolume* fCoreLogic;

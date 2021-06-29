@@ -4,10 +4,8 @@
 //
 //DevNotes: PMT's, sensitive detectors must be made sensitive, Scintillators,  push changes to git
 //
-//ring: inititate logical volume to null
-//
 //EXAMPLES: Good rotation matrix in A2DetCrystalBall.cc
-//QUESTIONS FOR PHIL: 
+//QUESTIONS FOR PHIL/DAVE: 
 //1. Is sodium iodide sufficient, or does it need to be thallium-doped?
 //2. Tiny hole in centre of core?
 #include "A2DetCATS.hh"
@@ -59,12 +57,12 @@ A2DetCATS::~A2DetCATS()  {
 //Delete sensitive detector here
 }
 //Main Construction instructions
-G4VPhysicalVolume* A2DetCATS::Construct(G4LogicalVolume *MotherLogical){ //logic 
+G4VPhysicalVolume* A2DetCATS::Construct(G4LogicalVolume *MotherLogical){ 
 fMotherLogic=MotherLogical;
 
 DefineMaterials();
 
-//MyLogic
+//WorldBox
 G4Box* airbox = new G4Box("pizzabox", 300*cm, 300*cm, 300*cm);
 fMyLogic = new G4LogicalVolume(airbox, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"),"pizzabox");
 fMyLogic->SetVisAttributes(G4VisAttributes::Invisible); 
@@ -78,9 +76,9 @@ fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,162*cm), fMyLogic, "A2DetCATS"
 return fMyPhysi;
 }
 
-//Function to make Materials, must be called in Construct()
+//Function to make Materials
 void A2DetCATS::DefineMaterials(){
-//creating carbon trioixide
+//creating Lithium Carbonate for the ring around Sodium Iodide Core
 G4double atm_num, a, density;
 G4String name, symbol;
 G4int ncomponents, natoms;
@@ -101,7 +99,7 @@ Li2CO3->AddElement(elO, natoms=3);
 Li2CO3->AddElement(elLi, natoms=2);
 }
 
-//function to build CATS core
+//function to build sodium iodide CATS core
 void A2DetCATS::MakeCore() {
 G4VisAttributes* col1 = new G4VisAttributes( G4Colour(0.4,0.5,0.1));
 col1->SetVisibility(true);
@@ -109,15 +107,12 @@ col1->SetVisibility(true);
 //Measurements of CATS Core. Technically two cylinders cemented together, but this if fine for now.
 G4Tubs *fCore = new G4Tubs("Core", 0*cm, 13.5*cm, z, 0.*deg, 360.*deg);
 
-//Make the core a logical volume.
 fCoreLogic = new G4LogicalVolume(fCore, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"),"CoreLogic");
-//next define how it looks
 fCoreLogic->SetVisAttributes(col1);
-//here we give the logical volume a placement
 fCorePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fCoreLogic, "CorePlacement", fMyLogic, 10, true);
-}//End of MakeVessel
+}
 
-//function to make NaI(Tl) annulus around the core of our detector
+//function to make Sodium Iodide annulus around the core of our detector
 void A2DetCATS::MakeAnnulus(){
 
 G4VisAttributes* col2 = new G4VisAttributes( G4Colour(0.0,1.0,1.0));
@@ -126,9 +121,7 @@ col2->SetVisibility(true);
 G4VisAttributes* col3 = new G4VisAttributes( G4Colour(1.0,0,0));
 col3->SetVisibility(true);
 
-// 1/6 of our annulus
 G4Tubs *fAnnulusPiece1 = new G4Tubs("AnnulusPiece1", 13.5*cm, 24*cm, z, 0.*deg, 60*deg);
-//Make the annulus a logical volume. Change material to Tl-doped NaI.
 fAnnulusPiece1Logic = new G4LogicalVolume(fAnnulusPiece1, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"), "AnnulusPieceLogic1");
 fAnnulusPiece1Logic->SetVisAttributes(col2);
 fAnnulusPiece1Physi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fAnnulusPiece1Logic, "AnnulusPlacement1", fMyLogic, 21, true);
@@ -159,6 +152,7 @@ fAnnulusPiece6Logic->SetVisAttributes(col3);
 fAnnulusPiece6Physi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fAnnulusPiece6Logic, "AnnulusPlacement6", fMyLogic, 26, true);
 }
 
+//function to create lithium carbonate ring around sodium iodide
 void A2DetCATS::MakeRing(){
 
 G4VisAttributes* col4 = new G4VisAttributes( G4Colour(1.0,0.0,1.0));
