@@ -11,13 +11,8 @@
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4Material.hh"
-
-/* These may be added later. Sensitive detector stuff definitly will be.
-#include "G4Region.hh"
-#include "G4OpticalSurface.hh"
 #include "A2SD.hh"
 #include "A2VisSD.hh"
-*/
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -39,9 +34,6 @@ public:
 	void MakeRing();
 private:
 	G4NistManager* fNistManager;
-	//A2SD* fCATSSD; //Will be included later when detector is made sensitive
-	//A2VisSD* fCATSVisSD; //
-
 
 	//logical and physical volumes that are part of every detector class
 	G4LogicalVolume* fMotherLogic; 
@@ -67,6 +59,11 @@ private:
 
 	G4LogicalVolume* fRingLogic;
 	G4VPhysicalVolume *fRingPhysi;
+
+	A2SD* fCoreSD;
+	A2VisSD* fCoreVisSD;
+
+	G4Region* fregionCATS;
 } ;
 
 #endif

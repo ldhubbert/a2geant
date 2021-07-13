@@ -46,7 +46,7 @@ A2DetectorConstruction::A2DetectorConstruction(G4String detSet)
   fUseTOF=0;
   fUseCherenkov=0;
   fUsePizza=0;
-  fUseCATS=0; //edit
+  fUseCATS=0; 
 
   fCrystalBall=NULL;
   fTAPS=NULL;
@@ -102,7 +102,7 @@ G4VPhysicalVolume* A2DetectorConstruction::Construct()
   fUseTOF=0;
   fUseCherenkov=0;
   fUsePizza=0;
-  fUseCATS=0; //edit
+  fUseCATS=0; 
   // read the set up file DetectorSetup.mac
   // get the pointer to the User Interface manager 
   G4UImanager* UI = G4UImanager::GetUIpointer();
@@ -168,7 +168,6 @@ G4VPhysicalVolume* A2DetectorConstruction::Construct()
     fTAPS->Construct(fWorldLogic);
   }
  
-//edit
   if(fUseCATS){
   G4cout<<"A2DetectorConstruction::Construct() CATS:)"<<G4endl;
   fCATS= new A2DetCATS();
