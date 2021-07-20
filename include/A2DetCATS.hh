@@ -32,6 +32,7 @@ public:
 	void DefineMaterials();
 	void MakeAnnulus();
 	void MakeRing();
+	void MakeScintillators();
 private:
 	G4NistManager* fNistManager;
 
@@ -60,8 +61,34 @@ private:
 	G4LogicalVolume* fRingLogic;
 	G4VPhysicalVolume *fRingPhysi;
 
+	G4LogicalVolume* fScint1Logic;
+	G4VPhysicalVolume * fScint1Physi;
+	G4LogicalVolume* fScint2Logic;
+        G4VPhysicalVolume * fScint2Physi;
+ 	G4LogicalVolume* fScint3Logic;
+        G4VPhysicalVolume * fScint3Physi;
+ 	G4LogicalVolume* fScint4Logic;
+        G4VPhysicalVolume * fScint4Physi;
+	G4LogicalVolume* fScint5Logic;
+        G4VPhysicalVolume * fScint5Physi;
+	G4LogicalVolume* fScint6Logic;
+	G4VPhysicalVolume * fScint6Physi;	
+
 	A2SD* fCoreSD;
 	A2VisSD* fCoreVisSD;
+
+	A2SD* fAnnulusPiece1SD;
+	A2VisSD* fAnnulusPiece1VisSD;
+	A2SD* fAnnulusPiece2SD;
+        A2VisSD* fAnnulusPiece2VisSD;
+	A2SD* fAnnulusPiece3SD;
+        A2VisSD* fAnnulusPiece3VisSD;
+	A2SD* fAnnulusPiece4SD;
+        A2VisSD* fAnnulusPiece4VisSD;
+	A2SD* fAnnulusPiece5SD;
+        A2VisSD* fAnnulusPiece5VisSD;
+	A2SD* fAnnulusPiece6SD;
+        A2VisSD* fAnnulusPiece6VisSD;
 
 	G4Region* fregionCATS;
 } ;
