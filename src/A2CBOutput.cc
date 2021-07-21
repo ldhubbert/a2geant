@@ -98,6 +98,12 @@ void A2CBOutput::SetBranches(){
   fTree->Branch("evtaps",fevtaps,"fevtaps[fnvtaps]/F",basket);
   fTree->Branch("icryst",ficryst,"ficryst[fnhits]/I",basket);
   fTree->Branch("ictaps",fictaps,"fictaps[fntaps]/I",basket);
+  //CATS addition Vincent Bruening
+  fTree->Branch("nCATS",&fnCATS,"fnCATS/I",basket);//number of hits
+  fTree->Branch("iCATS",fiCATS,"fiCATS[fnCATS]/I",basket); //Id of which part was hit
+  fTree->Branch("eCATS",feCATS,"feCATS[fnCATS]/F",basket); //energy deposited
+  fTree->Branch("tCATS",ftCATS,"ftCATS[fnCATS]/F",basket); //time
+
   if (fStorePrimaries)
   {
     G4cout << "Storing IDs of primary particles" << G4endl;
@@ -130,10 +136,10 @@ void A2CBOutput::SetBranches(){
     fTree->Branch("tofy",ftofy,"ftofy[fntof]/F",basket);
     fTree->Branch("tofz",ftofz,"ftofz[fntof]/F",basket);
   }
-  fTree->Branch("npiz",&fnpiz,"fnpiz/I",basket);
-  fTree->Branch("ipiz",fipiz,"fipiz[fnpiz]/I",basket);
-  fTree->Branch("epiz",fepiz,"fepiz[fnpiz]/F",basket);
-  fTree->Branch("tpiz",ftpiz,"ftpiz[fnpiz]/F",basket);
+  fTree->Branch("npiz",&fnpiz,"fnpiz/I",basket);//number of hits
+  fTree->Branch("ipiz",fipiz,"fipiz[fnpiz]/I",basket); //Id of which part was hit
+  fTree->Branch("epiz",fepiz,"fepiz[fnpiz]/F",basket); //energy deposited
+  fTree->Branch("tpiz",ftpiz,"ftpiz[fnpiz]/F",basket); //time
   if (fIsGiBUU)
     fTree->Branch("weight",&fweight,"fweight/F",basket);
  }
@@ -152,7 +158,7 @@ void A2CBOutput::WriteHit(G4HCofThisEvent* HitsColl){
     //if(!hc)continue; //no hits in that detector
     G4int hc_nhits=hc->entries();
     //G4cout<<i<<" "<<hc->GetName()<< " "<<hc_nhits<<G4endl;
-    if(hc->GetName()=="A2SDHitsCBSD"||hc->GetName()=="A2SDHitsVisCBSD"){
+    if(hc->GetName()=="A2SDHitsCBSD"||hc->GetName()=="A2SDHitsVisCBSD"){// hc: hits collection
       fnhits=hc_nhits;
       for(Int_t ii=0;ii<fnhits;ii++){
 	A2Hit* hit=static_cast<A2Hit*>(hc->GetHit(ii));
@@ -227,8 +233,16 @@ void A2CBOutput::WriteHit(G4HCofThisEvent* HitsColl){
 	fipiz[ii]=hit->GetID();
       }
     }
+    if(hc->GetName()=="A2SDHitsCATSSD" || hc->GetName()=="A2SDHitsCATSVisSD"){
+      fnCATS=hc_nhits;
+      for(Int_t ii=0;ii<fnpiz;ii++){
+        A2Hit* hit=static_cast<A2Hit*>(hc->GetHit(ii));
+        feCATS[ii]=hit->GetEdep()/GeV;
+        ftCATS[ii]=hit->GetTime()/ns;
+        fiCATS[ii]=hit->GetID();
   }
-  
+ } 
+}
 }
 void A2CBOutput::WriteGenInput(){
   //Note fvertex is already the pointer to fPGA::fGenPosition 

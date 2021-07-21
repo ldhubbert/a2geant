@@ -3,7 +3,7 @@
 //Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4, with insipration taken from an older version.
 //
 //This simulation will alow us to find the detector efficiency of the real CATS, as well as showing if the results we are looking for are attainable.
-//
+//Weird Particle Behavious: try changing to a vacuum
 //DevNotes:still need: PMT's (maybe), Confirm hole size with dave, lead housing (measurements in long one), check if data is accurate, see if SD needs to be deleted or needs more delcarations. edit A2CBOutput.cc, Check Alicia's document to see if there is anything missing.
 #include "A2DetCATS.hh"
 #include "A2DetPizza.hh" 
@@ -84,7 +84,7 @@ DefineMaterials();
 
 //WorldBox
 G4Box* airbox = new G4Box("pizzabox", 300*cm, 300*cm, 300*cm);
-fMyLogic = new G4LogicalVolume(airbox, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"),"pizzabox");
+fMyLogic = new G4LogicalVolume(airbox, fNistManager->FindOrBuildMaterial("G4_AIR"),"pizzabox");
 fMyLogic->SetVisAttributes(G4VisAttributes::Invisible); 
 
 //Define our Construction functions

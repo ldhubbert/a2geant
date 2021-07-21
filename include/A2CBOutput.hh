@@ -17,6 +17,7 @@ const G4int MAXSIZE_TAPS= 512;
 const G4int MAXSIZE_PID= 24;
 const G4int MAXSIZE_MWPC = 400;
 const G4int MAXSIZE_PIZZA = 24;
+const G4int MAXSIZE_CATS = 24; //liable to change
 
 class A2CBOutput 
 {
@@ -85,6 +86,12 @@ protected:
   Int_t fipiz[MAXSIZE_PIZZA]; //hit sector indexes
   Float_t fepiz[MAXSIZE_PIZZA]; //hit sector energy deposits
   Float_t ftpiz[MAXSIZE_PIZZA]; //hit sector time
+
+  //CATS addition Vincent Bruening
+  Int_t fnCATS; //Number of hits in CATS detector
+  Int_t fiCATS[MAXSIZE_CATS]; //hit sector indexes
+  Float_t feCATS[MAXSIZE_CATS]; //hit sector energy deposits
+  Float_t ftCATS[MAXSIZE_CATS]; //hit sector time
 
   G4bool fIsGiBUU; // Is this a GiBUU file
   Float_t fweight; // event weight
