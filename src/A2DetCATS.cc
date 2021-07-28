@@ -1,29 +1,17 @@
-//Vincent Bruening summer project under supervision by Dave Hornidge
+//Vincent Bruening summer project under supervision by Dr. David Hornidge
 //Mount Allison University Summer 2021
-//Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4, with insipration taken from an older version.
-//
-//This simulation will alow us to find the detector efficiency of the real CATS, as well as showing if the results we are looking for are attainable.
-//Weird Particle Behavious: try changing to a vacuum
-//DevNotes:still need: PMT's (maybe), Confirm hole size with dave, lead housing (measurements in long one), check if data is accurate, see if SD needs to be deleted or needs more delcarations. edit A2CBOutput.cc, Check Alicia's document to see if there is anything missing.
+//Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4
+//DevNotes:still need: Confirm hole size with dave, look at some histograms, see integration of sensitive detectors and A2CBOutput and figure out why histograms are not filling. PMTs? Maybe delete SD's?
+//With no detector and the beam set to hit the face of CATS, reactions look pretty good! One thing we could try- write a macro to shoot beam at CATS and see what the output histograms are.
+//In an attempt to fix output, I added "==1" after FisInteractice.
 #include "A2DetCATS.hh"
-#include "A2DetPizza.hh" 
-#include "G4NistManager.hh"
-#include "G4VisAttributes.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "G4PVPlacement.hh"
-#include "G4RotationMatrix.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4PhysicalConstants.hh"
 #include "G4Tubs.hh"
 #include "G4Box.hh"
-#include "G4Colour.hh"
-
-#include "A2SD.hh"
-#include "A2VisSD.hh"
-#include "A2Utils.hh"
-
 #include "G4SDManager.hh"
-
+#include "G4NistManager.hh"
+#include "G4Material.hh"
 using namespace CLHEP;
 
 //Constructor Begins
@@ -69,18 +57,16 @@ fAnnulusPiece6SD = NULL;
 fNistManager = G4NistManager::Instance();
 }
 
-//half-length of CATS
+//half-length of CATS. Made it a variable for ease of adjustment.
 G4double z = 31.75*cm;
 
 //destructor function
 A2DetCATS::~A2DetCATS()  {
-//Delete sensitive detector?
 }
+
 //Main Construction instructions
 G4VPhysicalVolume* A2DetCATS::Construct(G4LogicalVolume *MotherLogical){ 
 fMotherLogic=MotherLogical;
-
-DefineMaterials();
 
 //WorldBox
 G4Box* airbox = new G4Box("pizzabox", 300*cm, 300*cm, 300*cm);
@@ -94,30 +80,7 @@ MakeRing();
 MakeScintillators();
 
 fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,162*cm), fMyLogic, "A2DetCATS", fMotherLogic, false, 11, true);  
-//MakeDetector();
-//MakeSensitiveDetector();
 return fMyPhysi;
-}
-
-//Function to make Materials
-void A2DetCATS::DefineMaterials(){
-//creating Lithium Carbonate for insulation ring around Sodium Iodide Core
-G4double atm_num, a, density;
-G4String name, symbol;
-G4int ncomponents, natoms;
-
-a=12.01*g/mole;
-G4Element* elC = new G4Element(name="Carbon", symbol="C", atm_num=6., a);
-a=16.00*g/mole;
-G4Element* elO = new G4Element(name="Oxygen", symbol="O", atm_num=8., a);
-a=6.94*g/mole;
-G4Element* elLi = new G4Element(name="Lithium", symbol="Li", atm_num=3., a);
-
-density=2.11*g/cm3;
-G4Material* Li2CO3 = new G4Material(name="Li2CO3",density,ncomponents=3);
-Li2CO3->AddElement(elC, natoms=1);
-Li2CO3->AddElement(elO, natoms=3);
-Li2CO3->AddElement(elLi, natoms=2);
 }
 
 //function to build sodium iodide CATS core
@@ -132,11 +95,11 @@ fCoreLogic->SetVisAttributes(col1);
 
 //making core sensitive- integer "1" is because we are trying to make a single object sensitive
 G4SDManager* SDman = G4SDManager::GetSDMpointer();
-if(fIsInteractive){ 
+if(fIsInteractive==1){ //July 28- added the 1 in an attempt to fix my data
 if(!fCoreVisSD)fCoreVisSD = new A2VisSD("CoreVisSD",1); 
 SDman->AddNewDetector( fCoreVisSD );
 fCoreLogic->SetSensitiveDetector(fCoreVisSD);
-fregionCATS->AddRootLogicalVolume(fCoreLogic);
+fregionCATS->AddRootLogicalVolume(fCoreLogic);//needed to make "fregionCATS" to make CATS sensitive
 }
 else{
 if(!fCoreSD)fCoreSD = new A2SD("CoreSD",1); 
@@ -189,7 +152,7 @@ fAnnulusPiece6Physi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fAnnulusPiece6L
 
 //make annulus sensitive
 G4SDManager* SDman1 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece1VisSD)fAnnulusPiece1VisSD = new A2VisSD("AnnulusPiece1VisSD",1);
 SDman1->AddNewDetector( fAnnulusPiece1VisSD );
 fAnnulusPiece1Logic->SetSensitiveDetector(fAnnulusPiece1VisSD);
@@ -203,7 +166,7 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece1Logic);
 }
 
 G4SDManager* SDman2 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece2VisSD)fAnnulusPiece2VisSD = new A2VisSD("AnnulusPiece2VisSD",1);
 SDman2->AddNewDetector( fAnnulusPiece2VisSD );
 fAnnulusPiece2Logic->SetSensitiveDetector(fAnnulusPiece2VisSD);
@@ -217,7 +180,7 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece2Logic);
 }
 
 G4SDManager* SDman3 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece3VisSD)fAnnulusPiece3VisSD = new A2VisSD("AnnulusPiece3VisSD",1);
 SDman3->AddNewDetector( fAnnulusPiece3VisSD );
 fAnnulusPiece3Logic->SetSensitiveDetector(fAnnulusPiece3VisSD);
@@ -231,7 +194,7 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece3Logic);
 }
 
 G4SDManager* SDman4 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece4VisSD)fAnnulusPiece4VisSD = new A2VisSD("AnnulusPiece4VisSD",1);
 SDman4->AddNewDetector( fAnnulusPiece4VisSD );
 fAnnulusPiece4Logic->SetSensitiveDetector(fAnnulusPiece4VisSD);
@@ -245,7 +208,7 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece4Logic);
 }
 
 G4SDManager* SDman5 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece5VisSD)fAnnulusPiece5VisSD = new A2VisSD("AnnulusPiece5VisSD",1);
 SDman5->AddNewDetector( fAnnulusPiece5VisSD );
 fAnnulusPiece5Logic->SetSensitiveDetector(fAnnulusPiece5VisSD);
@@ -259,7 +222,7 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece5Logic);
 }
 
 G4SDManager* SDman6 = G4SDManager::GetSDMpointer();
-if(fIsInteractive){
+if(fIsInteractive==1){
 if(!fAnnulusPiece6VisSD)fAnnulusPiece6VisSD = new A2VisSD("AnnulusPiece6VisSD",1);
 SDman6->AddNewDetector( fAnnulusPiece6VisSD );
 fAnnulusPiece6Logic->SetSensitiveDetector(fAnnulusPiece6VisSD);
@@ -281,7 +244,7 @@ G4VisAttributes* col4 = new G4VisAttributes( G4Colour(1.0,0.0,1.0));
 col4->SetVisibility(true);
 
 G4Tubs *fRing = new G4Tubs("Ring", 24.13*cm, 25.13*cm, z, 0.*deg, 360.*deg);
-fRingLogic = new G4LogicalVolume(fRing, fNistManager->FindOrBuildMaterial("Li2CO3"), "RingLogic");
+fRingLogic = new G4LogicalVolume(fRing, fNistManager->FindOrBuildMaterial("G4_LITHIUM_CARBONATE"), "RingLogic");//Li2CO3 
 fRingLogic->SetVisAttributes(col4);
 fRingPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fRingLogic, "RingPlacement", fMyLogic, 27, true);
 }
@@ -316,11 +279,11 @@ G4Tubs *fScint5 = new G4Tubs("Scint5", 25.13*cm, 35.13*cm, z, 288.*deg, 72*deg);
 fScint5Logic = new G4LogicalVolume(fScint5, fNistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"), "ScintLogic5");
 fScint5Logic->SetVisAttributes(col4);
 fScint5Physi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fScint5Logic, "Scint5Placement", fMyLogic, 35, true);
-
+//this one is located on the back of CATS
 G4Tubs *fScint6 = new G4Tubs("Scint6", 0*cm, 35.13*cm, 4.7*cm, 0.*deg, 360*deg);
 fScint6Logic = new G4LogicalVolume(fScint6, fNistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"), "ScintLogic6");
 fScint6Logic->SetVisAttributes(col4);
-fScint6Physi = new G4PVPlacement(0, G4ThreeVector(0,0,36.45*cm), fScint6Logic, "Scint6Placement", fMyLogic, 36, true); 
+fScint6Physi = new G4PVPlacement(0, G4ThreeVector(0,0,36.45*cm), fScint6Logic, "Scint6Placement", fMyLogic, 36, true);
 }
 
 

@@ -48,16 +48,16 @@
 ###Materials: G4_lH2, A2_lD2, A2_lHe3, A2_lHe4
 #/A2/det/useTarget Cryo
 #/A2/det/useTarget Cryo2
-/A2/det/useTarget CryoHe3
-/A2/det/targetMaterial G4_lH2
-/A2/det/setTargetLength 5 cm
+#/A2/det/useTarget CryoHe3
+#/A2/det/targetMaterial G4_lH2
+/A2/det/setTargetLength 10 cm 
 #/A2/det/setTargetZ 0. cm
 ####Solid targets
-#/A2/det/useTarget Solid
+/A2/det/useTarget Solid 
 #/A2/det/useTarget Solid_Generic
 #/A2/det/useTarget Solid_Oct_18
 #/A2/det/targetMaterial G4_Pb
-#/A2/det/targetMaterial G4_GRAPHITE
+/A2/det/targetMaterial G4_GRAPHITE 
 #/A2/det/targetMaterial G4_Li
 #/A2/det/targetMaterial G4_Ca
 #####Polarised target

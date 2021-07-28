@@ -6,13 +6,12 @@
 #include "G4LogicalVolume.hh"
 #include "G4VisAttributes.hh"
 #include "G4PVPlacement.hh"
-#include "globals.hh"
-#include "G4RotationMatrix.hh"
-#include "G4NistManager.hh"
 #include "G4Box.hh"
-#include "G4Material.hh"
 #include "A2SD.hh"
 #include "A2VisSD.hh"
+#include "G4NistManager.hh"
+#include "G4Material.hh"
+
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -29,7 +28,6 @@ public:
 
 	virtual  G4VPhysicalVolume* Construct(G4LogicalVolume *MotherLogic); 
 	void MakeCore();
-	void DefineMaterials();
 	void MakeAnnulus();
 	void MakeRing();
 	void MakeScintillators();

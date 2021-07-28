@@ -98,8 +98,7 @@ void A2CBOutput::SetBranches(){
   fTree->Branch("evtaps",fevtaps,"fevtaps[fnvtaps]/F",basket);
   fTree->Branch("icryst",ficryst,"ficryst[fnhits]/I",basket);
   fTree->Branch("ictaps",fictaps,"fictaps[fntaps]/I",basket);
-  //CATS addition Vincent Bruening
-  fTree->Branch("nCATS",&fnCATS,"fnCATS/I",basket);//number of hits
+  fTree->Branch("nCATS",&fnCATS,"fnCATS/I",basket);//number of hits per event
   fTree->Branch("iCATS",fiCATS,"fiCATS[fnCATS]/I",basket); //Id of which part was hit
   fTree->Branch("eCATS",feCATS,"feCATS[fnCATS]/F",basket); //energy deposited
   fTree->Branch("tCATS",ftCATS,"ftCATS[fnCATS]/F",basket); //time
@@ -235,7 +234,7 @@ void A2CBOutput::WriteHit(G4HCofThisEvent* HitsColl){
     }
     if(hc->GetName()=="A2SDHitsCATSSD" || hc->GetName()=="A2SDHitsCATSVisSD"){
       fnCATS=hc_nhits;
-      for(Int_t ii=0;ii<fnpiz;ii++){
+      for(Int_t ii=0;ii<fnCATS;ii++){ //fnCATS was fnpiz
         A2Hit* hit=static_cast<A2Hit*>(hc->GetHit(ii));
         feCATS[ii]=hit->GetEdep()/GeV;
         ftCATS[ii]=hit->GetTime()/ns;
