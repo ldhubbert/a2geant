@@ -31,6 +31,7 @@ public:
 	void MakeAnnulus();
 	void MakeRing();
 	void MakeScintillators();
+	void MakeSensitiveDetectors();
 private:
 	G4NistManager* fNistManager;
 
@@ -72,22 +73,9 @@ private:
 	G4LogicalVolume* fScint6Logic;
 	G4VPhysicalVolume * fScint6Physi;	
 
-	A2SD* fCoreSD;
-	A2VisSD* fCoreVisSD;
-
-	A2SD* fAnnulusPiece1SD;
-	A2VisSD* fAnnulusPiece1VisSD;
-	A2SD* fAnnulusPiece2SD;
-        A2VisSD* fAnnulusPiece2VisSD;
-	A2SD* fAnnulusPiece3SD;
-        A2VisSD* fAnnulusPiece3VisSD;
-	A2SD* fAnnulusPiece4SD;
-        A2VisSD* fAnnulusPiece4VisSD;
-	A2SD* fAnnulusPiece5SD;
-        A2VisSD* fAnnulusPiece5VisSD;
-	A2SD* fAnnulusPiece6SD;
-        A2VisSD* fAnnulusPiece6VisSD;
-
+	A2SD* fCATSSD;
+	A2VisSD* fCATSVisSD;
+	
 	G4Region* fregionCATS;
 } ;
 
