@@ -39,7 +39,7 @@ fScint3Logic = NULL;
 fScint4Logic = NULL;
 fScint5Logic = NULL;
 fScint6Logic = NULL;
-//new!
+
 fCATSSD = NULL;
 fCATSVisSD = NULL;
 fNistManager = G4NistManager::Instance();
@@ -50,9 +50,9 @@ G4double z = 31.75*cm;
 
 //destructor function
 A2DetCATS::~A2DetCATS()  {
-if (fregionCATS) delete fregionCATS;
-if (fCATSSD) delete fCATSSD;
-if (fCATSVisSD) delete fCATSVisSD;
+//if (fregionCATS) delete fregionCATS;
+//if (fCATSSD) delete fCATSSD;
+//if (fCATSVisSD) delete fCATSVisSD;
 }
 
 //Main Construction instructions
@@ -181,50 +181,50 @@ G4SDManager* SDman = G4SDManager::GetSDMpointer();
 if(fIsInteractive==1){ //==1
 if(!fCATSVisSD)fCATSVisSD = new A2VisSD("CATSVisSD",7);//seven because we are making 7 parts sensitive 
 SDman->AddNewDetector( fCATSVisSD );
-fCoreLogic->SetSensitiveDetector(fCoreVisSD);
+fCoreLogic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fCoreLogic);
 
-fAnnulusPiece1Logic->SetSensitiveDetector(fAnnulusPiece1VisSD);
+fAnnulusPiece1Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece1Logic);
 
-fAnnulusPiece2Logic->SetSensitiveDetector(fAnnulusPiece2VisSD);
+fAnnulusPiece2Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece2Logic);
 
-fAnnulusPiece3Logic->SetSensitiveDetector(fAnnulusPiece3VisSD);
+fAnnulusPiece3Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece3Logic);
 
-fAnnulusPiece4Logic->SetSensitiveDetector(fAnnulusPiece4VisSD);
+fAnnulusPiece4Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece4Logic);
 
-fAnnulusPiece5Logic->SetSensitiveDetector(fAnnulusPiece5VisSD);
+fAnnulusPiece5Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece5Logic);
 
-fAnnulusPiece6Logic->SetSensitiveDetector(fAnnulusPiece6VisSD);
+fAnnulusPiece6Logic->SetSensitiveDetector(fCATSVisSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece6Logic);
 
 }
 else{
 if(!fCATSSD)fCATSSD = new A2SD("CATSSD",7); 
 SDman->AddNewDetector( fCATSSD );
-fCoreLogic->SetSensitiveDetector(fCoreSD);
+fCoreLogic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fCoreLogic);
 
-fAnnulusPiece1Logic->SetSensitiveDetector(fAnnulusPiece1SD);
+fAnnulusPiece1Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece1Logic);
 
-fAnnulusPiece2Logic->SetSensitiveDetector(fAnnulusPiece2SD);
+fAnnulusPiece2Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece2Logic);
 
-fAnnulusPiece3Logic->SetSensitiveDetector(fAnnulusPiece3SD);
+fAnnulusPiece3Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece3Logic);
 
-fAnnulusPiece4Logic->SetSensitiveDetector(fAnnulusPiece4SD);
+fAnnulusPiece4Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece4Logic);
 
-fAnnulusPiece5Logic->SetSensitiveDetector(fAnnulusPiece5SD);
+fAnnulusPiece5Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece5Logic);
 
-fAnnulusPiece6Logic->SetSensitiveDetector(fAnnulusPiece6SD);
+fAnnulusPiece6Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece6Logic);
 
 }
