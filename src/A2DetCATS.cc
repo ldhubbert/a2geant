@@ -1,11 +1,9 @@
 //Vincent Bruening summer project under supervision by Dr. David Hornidge
 //Mount Allison University Summer 2021
 //Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4
-//DevNotes:still need: Confirm hole size with dave, look at some histograms, see integration of sensitive detectors and A2CBOutput and figure out why histograms are not filling. PMTs? Maybe delete SD's?
-//With no detector and the beam set to hit the face of CATS, reactions look pretty good! One thing we could try- write a macro to shoot beam at CATS and see what the output histograms are.
-//In an attempt to fix output, I added "==1" after FisInteractice.
-//Another thing to try: changing phi offset in EvGen.in
-//Look at:MWPC
+//DevNotes:still need: plastic scintillator in front
+//CURRENT ISSUES:1. Back piece of lead box is not fully flush- missing 1 mm on both sides in y. Whenever I put in the full 100mm, the GUI cannot load.
+//2. core is still one piece
 #include "A2DetCATS.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "G4PVPlacement.hh"
@@ -14,6 +12,10 @@
 #include "G4SDManager.hh"
 #include "G4NistManager.hh"
 #include "G4Material.hh"
+#include "G4MultiUnion.hh"
+#include "G4RotationMatrix.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4Cons.hh"
 using namespace CLHEP;
 
 //Constructor Begins
@@ -50,9 +52,6 @@ G4double z = 31.75*cm;
 
 //destructor function
 A2DetCATS::~A2DetCATS()  {
-//if (fregionCATS) delete fregionCATS;
-//if (fCATSSD) delete fCATSSD;
-//if (fCATSVisSD) delete fCATSVisSD;
 }
 
 //Main Construction instructions
@@ -70,8 +69,9 @@ MakeAnnulus();
 MakeRing();
 MakeScintillators();
 MakeSensitiveDetectors();
+MakeLeadShield();
 
-fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,162*cm), fMyLogic, "A2DetCATS", fMotherLogic, false, 1, true);  
+fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,100*cm), fMyLogic, "A2DetCATS", fMotherLogic, false, 1, true); //z=162cm 
 return fMyPhysi;
 }
 
@@ -230,5 +230,85 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece6Logic);
 }
 }
 
+void A2DetCATS::MakeLeadShield(){
+G4double Leadx = 351.5*mm; 
 
+G4double Longy = 50*mm;
+//G4double Longz = 437.5*mm; //will add 1.3cm/2 have not yet
+G4double Longzz = 450.5*mm;
 
+//Two of the "Long" parts of the rectangle
+G4Box* fLongBit1 = new G4Box("LongBit1", Leadx+100*mm, Longy, Longzz);
+G4Box* fLongBit2 = new G4Box("LongBit2", Leadx+100*mm, Longy, Longzz); 
+
+//The other two "Long" parts
+G4Box* fOtherLongBit1 = new G4Box("OtherLongBit1", Longy, Leadx, Longzz);
+G4Box* fOtherLongBit2 = new G4Box("OtherLongBit2", Longy, Leadx, Longzz);
+
+//G4double enddimension = 451.5*mm;
+
+G4Box* fEndBit = new G4Box("EndBit", Leadx+100*mm, Leadx+100*mm, Longy);//add 100mm-- was Leadx+100*mm but that doesnt load well
+
+//subtraction solid here!
+G4Box* fFrontBit = new G4Box("FrontBit", Longzz, Longzz, 105*mm);
+G4Tubs* fFrontBitHole = new G4Tubs("FrontBitHole", 0*cm, 6.9*cm, 105.1*mm, 0*deg, 360*deg); //try 105.1
+
+G4SubtractionSolid *subtraction = new G4SubtractionSolid("subtraction", fFrontBit, fFrontBitHole);
+
+//making the inner cone! Give her a colour!
+G4Cons* fLeadCone = new G4Cons("LeadCone", 138*mm, 260*mm, 187*mm, 260*mm, 73*mm, 0*deg, 360*deg);
+fLeadConeLogic = new G4LogicalVolume(fLeadCone, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadConeLogic");
+fLeadConePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-390.5*mm), fLeadConeLogic, "PLeadCone", fMyLogic, 17, true); //393
+
+//endbit transform
+G4ThreeVector EndDisplacement = G4ThreeVector(0,0,46.15*cm);//adding 5cm to z so no overlap with back scintillator --was 41.15
+G4RotationMatrix none = G4RotationMatrix(); //for no rotation
+none.rotateX(0.*deg);
+none.rotateY(0.*deg);
+none.rotateX(0.*deg);
+G4Transform3D EndBitTransform = G4Transform3D(none, EndDisplacement);
+
+G4double Placement = 401.5*mm;
+
+G4double LongBitZ= -1.3*cm;
+
+//LongBit1 transform
+G4ThreeVector HighLongBit1 = G4ThreeVector(0,Placement,LongBitZ); //351.5
+G4Transform3D LongBit1Transform = G4Transform3D(none, HighLongBit1);
+
+//LongBit2 transform
+G4ThreeVector LowLongBit2 = G4ThreeVector(0,-Placement,LongBitZ);
+G4Transform3D LongBit2Transform = G4Transform3D(none, LowLongBit2);
+
+//OtherLongBit1 transform
+G4ThreeVector OLB1Displacement = G4ThreeVector(Placement,0,LongBitZ);
+G4Transform3D OLB1Transform = G4Transform3D(none, OLB1Displacement);
+
+//OtherLongBit2 transform
+G4ThreeVector OLB2Displacement = G4ThreeVector(-Placement,0,LongBitZ);
+G4Transform3D OLB2Transform = G4Transform3D(none, OLB2Displacement);
+//front
+G4ThreeVector FrontDisplacement = G4ThreeVector(0,0,-495.5*mm);//-495.5
+G4Transform3D FrontBitTransform = G4Transform3D(none, FrontDisplacement);
+
+G4MultiUnion* LeadBox = new G4MultiUnion("LeadBox");
+
+LeadBox->AddNode(*fEndBit, EndBitTransform);
+LeadBox->AddNode(*fLongBit1, LongBit1Transform);
+LeadBox->AddNode(*fLongBit2, LongBit2Transform);
+LeadBox->AddNode(*fOtherLongBit1, OLB1Transform);
+LeadBox->AddNode(*fOtherLongBit2, OLB2Transform);
+LeadBox->AddNode(*subtraction, FrontBitTransform);
+
+LeadBox->Voxelize();
+
+fLeadBoxLogic = new G4LogicalVolume(LeadBox, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadLogic");
+
+G4VisAttributes* col5 = new G4VisAttributes( G4Colour(0.3,1.0,0.0));
+col5->SetVisibility(true);
+
+fLeadBoxLogic->SetVisAttributes(col5);
+
+fLeadBoxPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fLeadBoxLogic, "PLeadBox", fMyLogic, 16, true);
+
+}
