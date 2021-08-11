@@ -1,9 +1,8 @@
 //Vincent Bruening summer project under supervision by Dr. David Hornidge
 //Mount Allison University Summer 2021
 //Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4
-//DevNotes:still need: plastic scintillator in front
-//CURRENT ISSUES:1. Back piece of lead box is not fully flush- missing 1 mm on both sides in y. Whenever I put in the full 100mm, the GUI cannot load.
-//2. core is still one piece
+//DevNotes:still need: -plastic scintillator in front- 5mm, make the square slightly larger than diamater of whole
+//                     -core is still one piece
 #include "A2DetCATS.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "G4PVPlacement.hh"
@@ -41,6 +40,8 @@ fScint3Logic = NULL;
 fScint4Logic = NULL;
 fScint5Logic = NULL;
 fScint6Logic = NULL;
+fLeadConeLogic = NULL;
+fLeadBoxLogic = NULL;
 
 fCATSSD = NULL;
 fCATSVisSD = NULL;
@@ -255,7 +256,7 @@ G4SubtractionSolid *subtraction = new G4SubtractionSolid("subtraction", fFrontBi
 //making the inner cone! 
 G4Cons* fLeadCone = new G4Cons("LeadCone", 138*mm, 260*mm, 187*mm, 260*mm, 73*mm, 0*deg, 360*deg);
 fLeadConeLogic = new G4LogicalVolume(fLeadCone, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadConeLogic");
-fLeadConePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-390.5*mm), fLeadConeLogic, "PLeadCone", fMyLogic, 17, true); //393
+fLeadConePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-390.5*mm), fLeadConeLogic, "PLeadCone", fMyLogic, 16, true); 
 
 //endbit transform
 G4ThreeVector EndDisplacement = G4ThreeVector(0,0,46.15*cm);//adding 5cm to z so no overlap with back scintillator --was 41.15
@@ -266,7 +267,6 @@ none.rotateX(0.*deg);
 G4Transform3D EndBitTransform = G4Transform3D(none, EndDisplacement);
 
 G4double Placement = 401.5*mm;
-
 G4double LongBitZ= -1.3*cm;
 
 //LongBit1 transform
@@ -306,6 +306,6 @@ col5->SetVisibility(true);
 
 fLeadBoxLogic->SetVisAttributes(col5);
 
-fLeadBoxPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fLeadBoxLogic, "PLeadBox", fMyLogic, 16, true);
+fLeadBoxPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fLeadBoxLogic, "PLeadBox", fMyLogic, 17, true);
 
 }
