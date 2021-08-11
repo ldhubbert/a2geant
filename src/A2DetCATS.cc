@@ -234,10 +234,9 @@ void A2DetCATS::MakeLeadShield(){
 G4double Leadx = 351.5*mm; 
 
 G4double Longy = 50*mm;
-//G4double Longz = 437.5*mm; //will add 1.3cm/2 have not yet
 G4double Longzz = 450.5*mm;
 
-//Two of the "Long" parts of the rectangle
+//Two of the "Long" parts of the box
 G4Box* fLongBit1 = new G4Box("LongBit1", Leadx+100*mm, Longy, Longzz);
 G4Box* fLongBit2 = new G4Box("LongBit2", Leadx+100*mm, Longy, Longzz); 
 
@@ -245,17 +244,15 @@ G4Box* fLongBit2 = new G4Box("LongBit2", Leadx+100*mm, Longy, Longzz);
 G4Box* fOtherLongBit1 = new G4Box("OtherLongBit1", Longy, Leadx, Longzz);
 G4Box* fOtherLongBit2 = new G4Box("OtherLongBit2", Longy, Leadx, Longzz);
 
-//G4double enddimension = 451.5*mm;
-
-G4Box* fEndBit = new G4Box("EndBit", Leadx+100*mm, Leadx+100*mm, Longy);//add 100mm-- was Leadx+100*mm but that doesnt load well
+G4Box* fEndBit = new G4Box("EndBit", Leadx+100*mm, Leadx+100*mm, Longy);
 
 //subtraction solid here!
-G4Box* fFrontBit = new G4Box("FrontBit", Longzz, Longzz, 105*mm);
-G4Tubs* fFrontBitHole = new G4Tubs("FrontBitHole", 0*cm, 6.9*cm, 105.1*mm, 0*deg, 360*deg); //try 105.1
+G4Box* fFrontBit = new G4Box("FrontBit", Longzz, Longzz, 105*mm);//was 105
+G4Tubs* fFrontBitHole = new G4Tubs("FrontBitHole", 0*cm, 6.9*cm, 105.1*mm, 0*deg, 360*deg); //had to make the hole slightly longer than the box- otherwise you could not see the hole on both sides of the front bit
 
 G4SubtractionSolid *subtraction = new G4SubtractionSolid("subtraction", fFrontBit, fFrontBitHole);
 
-//making the inner cone! Give her a colour!
+//making the inner cone! 
 G4Cons* fLeadCone = new G4Cons("LeadCone", 138*mm, 260*mm, 187*mm, 260*mm, 73*mm, 0*deg, 360*deg);
 fLeadConeLogic = new G4LogicalVolume(fLeadCone, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadConeLogic");
 fLeadConePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-390.5*mm), fLeadConeLogic, "PLeadCone", fMyLogic, 17, true); //393
@@ -273,7 +270,7 @@ G4double Placement = 401.5*mm;
 G4double LongBitZ= -1.3*cm;
 
 //LongBit1 transform
-G4ThreeVector HighLongBit1 = G4ThreeVector(0,Placement,LongBitZ); //351.5
+G4ThreeVector HighLongBit1 = G4ThreeVector(0,Placement,LongBitZ); 
 G4Transform3D LongBit1Transform = G4Transform3D(none, HighLongBit1);
 
 //LongBit2 transform
@@ -288,7 +285,7 @@ G4Transform3D OLB1Transform = G4Transform3D(none, OLB1Displacement);
 G4ThreeVector OLB2Displacement = G4ThreeVector(-Placement,0,LongBitZ);
 G4Transform3D OLB2Transform = G4Transform3D(none, OLB2Displacement);
 //front
-G4ThreeVector FrontDisplacement = G4ThreeVector(0,0,-495.5*mm);//-495.5
+G4ThreeVector FrontDisplacement = G4ThreeVector(0,0,-495.5*mm);//Phil: I believe that -495.5mm is the correct placement for the front piece, but the GUI does not load when that is the position.
 G4Transform3D FrontBitTransform = G4Transform3D(none, FrontDisplacement);
 
 G4MultiUnion* LeadBox = new G4MultiUnion("LeadBox");
