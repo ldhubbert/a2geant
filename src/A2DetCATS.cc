@@ -1,8 +1,7 @@
 //Vincent Bruening summer project under supervision by Dr. David Hornidge
 //Mount Allison University Summer 2021
 //Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4
-//DevNotes:still need: -plastic scintillator in front- 5mm, make the square slightly larger than diamater of whole
-//                     -core is still one piece
+//        
 #include "A2DetCATS.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "G4PVPlacement.hh"
@@ -42,6 +41,7 @@ fScint5Logic = NULL;
 fScint6Logic = NULL;
 fLeadConeLogic = NULL;
 fLeadBoxLogic = NULL;
+fVetoLogic = NULL;
 
 fCATSSD = NULL;
 fCATSVisSD = NULL;
@@ -71,8 +71,9 @@ MakeRing();
 MakeScintillators();
 MakeSensitiveDetectors();
 MakeLeadShield();
+MakeVeto();
 
-fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,100*cm), fMyLogic, "A2DetCATS", fMotherLogic, false, 1, true); //z=162cm 
+fMyPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,150*cm), fMyLogic, "A2DetCATS", fMotherLogic, false, 1, true);  
 return fMyPhysi;
 }
 
@@ -81,7 +82,7 @@ void A2DetCATS::MakeCore() {
 G4VisAttributes* col1 = new G4VisAttributes( G4Colour(0.4,0.5,0.1));
 col1->SetVisibility(true);
 
-//Measurements of CATS Core. Technically two cylinders cemented together, but this if fine for now.
+//Measurements of CATS Core. Technically two cylinders cemented together, but this if fine.
 G4Tubs *fCore = new G4Tubs("Core", 1*cm, 13.335*cm, z, 0.*deg, 360.*deg); 
 fCoreLogic = new G4LogicalVolume(fCore, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"),"CoreLogic");
 fCoreLogic->SetVisAttributes(col1);
@@ -179,7 +180,7 @@ fScint6Physi = new G4PVPlacement(0, G4ThreeVector(0,0,36.45*cm), fScint6Logic, "
 
 void A2DetCATS::MakeSensitiveDetectors(){
 G4SDManager* SDman = G4SDManager::GetSDMpointer();
-if(fIsInteractive==1){ //==1
+if(fIsInteractive==1){ 
 if(!fCATSVisSD)fCATSVisSD = new A2VisSD("CATSVisSD",7);//seven because we are making 7 parts sensitive 
 SDman->AddNewDetector( fCATSVisSD );
 fCoreLogic->SetSensitiveDetector(fCATSVisSD);
@@ -227,7 +228,6 @@ fregionCATS->AddRootLogicalVolume(fAnnulusPiece5Logic);
 
 fAnnulusPiece6Logic->SetSensitiveDetector(fCATSSD);
 fregionCATS->AddRootLogicalVolume(fAnnulusPiece6Logic);
-
 }
 }
 
@@ -248,7 +248,7 @@ G4Box* fOtherLongBit2 = new G4Box("OtherLongBit2", Longy, Leadx, Longzz);
 G4Box* fEndBit = new G4Box("EndBit", Leadx+100*mm, Leadx+100*mm, Longy);
 
 //subtraction solid here!
-G4Box* fFrontBit = new G4Box("FrontBit", Longzz, Longzz, 105*mm);//was 105
+G4Box* fFrontBit = new G4Box("FrontBit", Longzz, Longzz, 105*mm);
 G4Tubs* fFrontBitHole = new G4Tubs("FrontBitHole", 0*cm, 6.9*cm, 105.1*mm, 0*deg, 360*deg); //had to make the hole slightly longer than the box- otherwise you could not see the hole on both sides of the front bit
 
 G4SubtractionSolid *subtraction = new G4SubtractionSolid("subtraction", fFrontBit, fFrontBitHole);
@@ -258,8 +258,13 @@ G4Cons* fLeadCone = new G4Cons("LeadCone", 138*mm, 260*mm, 187*mm, 260*mm, 73*mm
 fLeadConeLogic = new G4LogicalVolume(fLeadCone, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadConeLogic");
 fLeadConePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-390.5*mm), fLeadConeLogic, "PLeadCone", fMyLogic, 16, true); 
 
+G4VisAttributes* col5 = new G4VisAttributes( G4Colour(0,0,1.0));
+col5->SetVisibility(true);
+//col5->SetVisibility(false);
+fLeadConeLogic->SetVisAttributes(col5);
+
 //endbit transform
-G4ThreeVector EndDisplacement = G4ThreeVector(0,0,46.15*cm);//adding 5cm to z so no overlap with back scintillator --was 41.15
+G4ThreeVector EndDisplacement = G4ThreeVector(0,0,46.15*cm);//adding 5cm to z so no overlap with back scintillator
 G4RotationMatrix none = G4RotationMatrix(); //for no rotation
 none.rotateX(0.*deg);
 none.rotateY(0.*deg);
@@ -285,7 +290,7 @@ G4Transform3D OLB1Transform = G4Transform3D(none, OLB1Displacement);
 G4ThreeVector OLB2Displacement = G4ThreeVector(-Placement,0,LongBitZ);
 G4Transform3D OLB2Transform = G4Transform3D(none, OLB2Displacement);
 //front
-G4ThreeVector FrontDisplacement = G4ThreeVector(0,0,-495.5*mm);//Phil: I believe that -495.5mm is the correct placement for the front piece, but the GUI does not load when that is the position.
+G4ThreeVector FrontDisplacement = G4ThreeVector(1*mm,0,-495.5*mm);
 G4Transform3D FrontBitTransform = G4Transform3D(none, FrontDisplacement);
 
 G4MultiUnion* LeadBox = new G4MultiUnion("LeadBox");
@@ -301,11 +306,24 @@ LeadBox->Voxelize();
 
 fLeadBoxLogic = new G4LogicalVolume(LeadBox, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadLogic");
 
-G4VisAttributes* col5 = new G4VisAttributes( G4Colour(0.3,1.0,0.0));
-col5->SetVisibility(true);
+G4VisAttributes* col6 = new G4VisAttributes( G4Colour(0.3,1.0,0.0));
+//col6->SetVisibility(true);
+col6->SetVisibility(false);
 
-fLeadBoxLogic->SetVisAttributes(col5);
+fLeadBoxLogic->SetVisAttributes(col6);
 
 fLeadBoxPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fLeadBoxLogic, "PLeadBox", fMyLogic, 17, true);
+}
+
+void A2DetCATS::MakeVeto(){
+G4Box* fVeto = new G4Box("Veto", 7*cm, 7*cm, 2.5*mm);
+fVetoLogic = new G4LogicalVolume(fVeto, fNistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"), "VetoLogic");
+
+G4VisAttributes* col7 = new G4VisAttributes( G4Colour(0,0.3,1.0));
+
+col7->SetVisibility(true);
+
+fVetoLogic->SetVisAttributes(col7);
+fVetoPhysi = new G4PVPlacement(0, G4ThreeVector(0,0,-605.5*mm), fVetoLogic, "VetoPlacement", fMyLogic, 18, true);
 
 }

@@ -33,6 +33,7 @@ public:
 	void MakeScintillators();
 	void MakeSensitiveDetectors();
 	void MakeLeadShield();
+	void MakeVeto();
 private:
 	G4NistManager* fNistManager;
 
@@ -78,7 +79,10 @@ private:
 	G4VPhysicalVolume* fLeadConePhysi;	
 
 	G4LogicalVolume* fLeadBoxLogic;
-	G4VPhysicalVolume * fLeadBoxPhysi;	
+	G4VPhysicalVolume * fLeadBoxPhysi;
+
+	G4LogicalVolume *fVetoLogic;
+	G4VPhysicalVolume *fVetoPhysi;
 
 	A2SD* fCATSSD;
 	A2VisSD* fCATSVisSD;
