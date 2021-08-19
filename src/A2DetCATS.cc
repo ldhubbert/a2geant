@@ -1,7 +1,11 @@
 //Vincent Bruening summer project under supervision by Dr. David Hornidge
 //Mount Allison University Summer 2021
 //Integrating Compton And Two photon Spectrometer (CATS) into newest version of A2Geant4
-//        
+//Notes for whoever works on this next: This is a complete simulation. Current state of affairs:
+//-All the EvGenBasic files have been run through Geant4.
+//-We want the ratio of FWHM/photon energies to be consistent
+//-Unfortunately, the Gaussian curves were not a perfect fit
+//-Try some assymetric fits: https://root.cern.ch/doc/v610/group__PdfFunc.html        
 #include "A2DetCATS.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "G4PVPlacement.hh"
@@ -307,8 +311,8 @@ LeadBox->Voxelize();
 fLeadBoxLogic = new G4LogicalVolume(LeadBox, fNistManager->FindOrBuildMaterial("G4_Pb"), "LeadLogic");
 
 G4VisAttributes* col6 = new G4VisAttributes( G4Colour(0.3,1.0,0.0));
-//col6->SetVisibility(true);
-col6->SetVisibility(false);
+col6->SetVisibility(true);
+//col6->SetVisibility(false);
 
 fLeadBoxLogic->SetVisAttributes(col6);
 
