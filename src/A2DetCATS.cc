@@ -87,7 +87,7 @@ G4VisAttributes* col1 = new G4VisAttributes( G4Colour(0.4,0.5,0.1));
 col1->SetVisibility(true);
 
 //Measurements of CATS Core. Technically two cylinders cemented together, but this if fine.
-G4Tubs *fCore = new G4Tubs("Core", 1*cm, 13.335*cm, z, 0.*deg, 360.*deg); 
+G4Tubs *fCore = new G4Tubs("Core", 0*cm, 13.335*cm, z, 0.*deg, 360.*deg);//removed hole that was never meant to be there 
 fCoreLogic = new G4LogicalVolume(fCore, fNistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE"),"CoreLogic");
 fCoreLogic->SetVisAttributes(col1);
 fCorePhysi = new G4PVPlacement(0, G4ThreeVector(0,0,0), fCoreLogic, "CorePlacement", fMyLogic, 2, true);
@@ -270,9 +270,9 @@ fLeadConeLogic->SetVisAttributes(col5);
 //endbit transform
 G4ThreeVector EndDisplacement = G4ThreeVector(0,0,46.15*cm);//adding 5cm to z so no overlap with back scintillator
 G4RotationMatrix none = G4RotationMatrix(); //for no rotation
-none.rotateX(0.*deg);
-none.rotateY(0.*deg);
-none.rotateX(0.*deg);
+//none.rotateX(0.*deg);
+//none.rotateY(0.*deg);//I really don't think these are necessary ...
+//none.rotateX(0.*deg);
 G4Transform3D EndBitTransform = G4Transform3D(none, EndDisplacement);
 
 G4double Placement = 401.5*mm;
