@@ -6,7 +6,6 @@
 
   // Draw histos filled by Geant4 simulation 
   //   
-
   // Open file filled by Geant4 simulation 
   TFile f("out/CATS.root");//was out/CATS.root
 
@@ -18,13 +17,14 @@
   c1->cd(1);
 
   TTree *eCATS = (TTree*)f.Get("h12");//these pointers are likely the issue
-  eCATS->Draw("eCATS*1000>>CATS(200,450,505)");
+  eCATS->Draw("eCATS*1000>>CATS(1000,280,301)");
   //h12->Draw("eCATS*1000>>eCATS(50,450,505)");
   //TH1F *h1 = gPad->GetPrimitive("htemp");
   
   CATS->GetXaxis()->SetTitle("Energy (MeV)");
   CATS->GetYaxis()->SetTitle("Counts");
   CATS->SetTitle("Energy Recorded by A2G4 CATS sim");
+  gPad->SetLogy();
   //eCATS->SetTitle("Energy Recorded by A2G4 CATS sim;a;a");
   //gPad->Update();
   //TPaveText *title = (TPaveText*)gPad->GetPrimitive("Energy Recorded by A2G4 CATS sim");
