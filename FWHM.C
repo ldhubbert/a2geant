@@ -6,7 +6,8 @@
   //   
   int y = 20;
   // Open file filled by Geant4 simulation 
-  TFile f1("out/CATS.root");
+  TFile f1("Out/");
+  //LAURA COMMENT: NOTE: the file filled by the Geant4 simulation needs to be inserted here, depending on which energy you wanted run through the sim (i.e., the B4_100MeV.root file, etc.)
 
   // Create a canvas and divide it into 2x2 pads
   TCanvas* c1 = new TCanvas("c1", "", 20, 20, 1000, 1000);
